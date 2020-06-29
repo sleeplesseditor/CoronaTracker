@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchDailyData } from '../../api';
 import { Line, Bar } from 'react-chartjs-2';
+import moment from 'moment';
 import styles from './Chart.module.css';
 
 const Chart = ({ data: { confirmed, deaths, recovered }, country }) => {
@@ -18,7 +19,7 @@ const Chart = ({ data: { confirmed, deaths, recovered }, country }) => {
     dailyData.length ? (
       <Line 
         data={{
-          labels: dailyData.map(({ date }) => date),
+          labels: dailyData.map(({ date }) => moment(date).format('MMM Do')),
           datasets: [{
             data: dailyData.map(({ confirmed }) => confirmed),
             label: 'Infected',
@@ -33,7 +34,16 @@ const Chart = ({ data: { confirmed, deaths, recovered }, country }) => {
           }]
         }}
         options={{
-          responsive: true
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                callback(value) {
+                  return Number(value).toLocaleString('en')
+                }
+              }
+            }]
+          }
         }}
       />
     ) : null
@@ -56,7 +66,25 @@ const Chart = ({ data: { confirmed, deaths, recovered }, country }) => {
         }}
         options={{
           legend: { display: false },
-          title: { display: true, text: `Current state in ${country}`}
+          title: { display: true, text: `Current state in ${country}`},
+          scales: {
+            yAxes: [{
+              ticks: {
+                callback(value) {
+                  return Number(value).toLocaleString('en')
+                }
+              }
+            }]
+          },
+          tooltips: { 
+            mode: 'label', 
+            label: 'barLabel', 
+            callbacks: { 
+                label: function(tooltipItem, data) { 
+                    return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                }, 
+            }, 
+          }, 
         }}
       />
     ) : null
