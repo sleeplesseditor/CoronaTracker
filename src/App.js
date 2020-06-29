@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styles from './App.module.css';
 import { Cards, Chart, CountryPicker } from './components';
+import globleImage from './img/globe.png';
 import { fetchData } from './api';
 
 class App extends Component {
@@ -25,6 +26,10 @@ class App extends Component {
 
     return (
       <div className={styles.container}>
+        <div className={styles.titleContainer}>
+          <img className={styles.image} src={globleImage} alt="COVID-19" />
+          <h1 className={styles.title}>COVID-19 Tracker</h1>
+        </div>
         <Cards data={data} />
         <CountryPicker handleCountryChange={this.handleCountryChange} />
         <Chart data={data} country={country} />
