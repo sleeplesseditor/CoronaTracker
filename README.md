@@ -4,6 +4,6 @@ A COVID-19 information tracking app built with React and Charts.js, using [Adria
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-<img width="1115" alt="Screenshot 2020-06-29 at 21 22 28" src="https://user-images.githubusercontent.com/25869284/86053070-dbbcfd00-ba4f-11ea-9b38-a5d0fa9ad504.png">
+<img width="1001" alt="Screenshot 2020-06-30 at 02 31 40" src="https://user-images.githubusercontent.com/25869284/86072625-dc6a8900-ba79-11ea-9d91-7795d9d684d5.png">
 
 The app with the default 'Global' view.
