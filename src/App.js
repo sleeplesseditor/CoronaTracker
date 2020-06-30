@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import styles from './App.module.css';
-import { Cards, Chart, CountryPicker } from './components';
+import { Cards, Chart, CountryPicker, Map } from './components';
 import { Tab, Tabs } from '@material-ui/core';
 import globleImage from './img/globe.png';
 import { fetchData, fetchMapData } from './api';
@@ -34,26 +34,8 @@ class App extends Component {
     })
   }
 
-  renderChartView(data, country) {
-    return (
-      <Fragment>
-        <CountryPicker handleCountryChange={this.handleCountryChange} />
-        <Chart data={data} country={country} />
-      </Fragment>
-    )
-  }
-
-  renderMapView() {
-    return (
-      <div>
-        MAP
-      </div>
-    )
-  }
-
-
   render() {
-    const { country, countryView, data  } = this.state;
+    const { country, countryView, data } = this.state;
 
     return (
       <div className={styles.container}>
@@ -77,7 +59,7 @@ class App extends Component {
         ): null}
         {countryView === 0 ? (
           <Chart data={data} country={country} />
-        ): this.renderMapView()}
+        ): <Map /> }
       </div>
     )
   }
