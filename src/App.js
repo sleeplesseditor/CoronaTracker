@@ -8,7 +8,7 @@ import { fetchData, fetchMapData } from './api';
 class App extends Component {
   state = {
     data: {},
-    mapData: {},
+    mapData: [],
     country: '',
     countryView: 0
   }
@@ -35,7 +35,7 @@ class App extends Component {
   }
 
   render() {
-    const { country, countryView, data } = this.state;
+    const { country, countryView, data, mapData } = this.state;
 
     return (
       <div className={styles.container}>
@@ -59,7 +59,7 @@ class App extends Component {
         ): null}
         {countryView === 0 ? (
           <Chart data={data} country={country} />
-        ): <Map /> }
+        ): <Map data={mapData} /> }
       </div>
     )
   }

@@ -1,8 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Krona+One&display=swap');
+
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   width: 55%;
   height: 600px;
+}
+
+.maptitle {
+  margin: 1rem 0;
+  text-align: center;
+  font-family: 'Krona', sans-serif;
+}
+
+.clusterMarker {
+  width: 300px;
+  height: 300px;
+  border-radius: '50%';
+  background-color: '#51D5A0';
+  display: 'flex';
+  justify-content: 'center';
+  align-items: 'center';
+  color: 'red';
+  z-index: 300;
 }
 
 @media (max-width: 770px) {
