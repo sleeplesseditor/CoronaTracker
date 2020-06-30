@@ -4,7 +4,7 @@ import moment from 'moment';
 const url = 'https://covid19.mathdro.id/api';
 const date = new Date();
 
-const yesterday = date.setDate(date.getDate() -1);
+const yesterday = date.setDate(date.getDate() -2);
 const formattedDate = moment(yesterday).format('M-DD-yyyy');
 
 export const fetchData = async (country) => {
@@ -58,7 +58,7 @@ export const fetchMapData = async () => {
     const modifiedData = data.map((mapData) => ({
       lat: parseFloat(mapData.lat),
       long: parseFloat(mapData.long),
-      // coordinates: [parseFloat(mapData.lat), parseFloat(mapData.long)],
+      // coordinates: [mapData.lat, mapData.long],
       confirmed: mapData.confirmed,
       deaths: mapData.deaths,
       recovered: mapData.recovered,

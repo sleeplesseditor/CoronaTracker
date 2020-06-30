@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styles from './App.module.css';
 import { Cards, Chart, CountryPicker, Map } from './components';
 import { Tab, Tabs } from '@material-ui/core';
 import globleImage from './img/globe.png';
-import { fetchData, fetchMapData } from './api';
+import { fetchData } from './api';
 
 class App extends Component {
   state = {
@@ -15,12 +15,7 @@ class App extends Component {
 
   async componentDidMount() {
     const fetchedData = await fetchData();
-    const mapTagData = await fetchMapData();
-
-    this.setState({ 
-      data: fetchedData,
-      mapData: mapTagData
-    })
+    this.setState({  data: fetchedData })
   }
 
   handleCountryChange = async (country) => {
@@ -35,7 +30,7 @@ class App extends Component {
   }
 
   render() {
-    const { country, countryView, data, mapData } = this.state;
+    const { country, countryView, data } = this.state;
 
     return (
       <div className={styles.container}>
@@ -59,7 +54,7 @@ class App extends Component {
         ): null}
         {countryView === 0 ? (
           <Chart data={data} country={country} />
-        ): <Map data={mapData} /> }
+        ): <Map /> }
       </div>
     )
   }
