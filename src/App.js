@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './App.module.css';
 import { Cards, Chart, CountryPicker } from './components';
 import globleImage from './img/globe.png';
-import { fetchData } from './api';
+import { fetchData, fetchMapData } from './api';
 
 class App extends Component {
   state = {
@@ -12,6 +12,8 @@ class App extends Component {
 
   async componentDidMount() {
     const fetchedData = await fetchData();
+    const mapData = await fetchMapData();
+    console.log('TODAY', mapData)
 
     this.setState({ data: fetchedData })
   }

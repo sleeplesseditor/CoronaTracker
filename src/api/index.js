@@ -1,6 +1,11 @@
 import axios from 'axios';
+import moment from 'moment';
 
 const url = 'https://covid19.mathdro.id/api';
+const date = new Date();
+
+const yesterday = date.setDate(date.getDate() -1);
+const formattedDate = moment(yesterday).format('M-DD-yyyy');
 
 export const fetchData = async (country) => {
   let changeableUrl = url;
@@ -31,7 +36,7 @@ export const fetchDailyData = async () => {
     return modifiedData;
 
   } catch(error) {
-    console.error('FetchDailyData Error', error)
+    console.error('FetchDailyData Error', error);
   }
 }
 
@@ -42,6 +47,26 @@ export const fetchCountries = async () => {
     return countries.map((country) => country.name);
 
   } catch (error) {
-    console.error('Country Data Error', error)
+    console.error('Country Data Error', error);
+  }
+}
+
+export const fetchMapData = async () => {
+  try {
+    const { data } = await axios.get(`${url}/daily/${formattedDate}`);
+
+    const modifiedData = data.map((mapData) => ({
+      lat: mapData.lat,
+      long: mapData.long,
+      confirmed: mapData.confirmed,
+      deaths: mapData.deaths,
+      recovered: mapData.recovered,
+      location: mapData.combinedKey
+    }))
+
+    return modifiedData;
+
+  } catch (error) {
+    console.error('Map Data Error', error);
   }
 }
