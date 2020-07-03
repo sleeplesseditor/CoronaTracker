@@ -6,7 +6,11 @@ import cx from 'classnames';
 
 const Cards = ({ data: { confirmed, deaths, lastUpdate, recovered } }) => {
   if(!confirmed) {
-    return 'Loading...'
+    return (
+      <div className={styles.cardloader}>
+        <Typography color="textSecondary" gutterBottom>Loading...</Typography>
+      </div>
+    )
   }
   return (
     <div className={styles.container}>

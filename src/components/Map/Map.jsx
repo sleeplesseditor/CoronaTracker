@@ -1,18 +1,21 @@
 import React, { PureComponent } from 'react';
 import { fetchMapData } from '../../api';
-import styles from './Map.module.css';
-import MapGL, { Marker, NavigationControl, Popup } from '@urbica/react-map-gl';
+import MapGL, { FullscreenControl, GeolocateControl, Marker, NavigationControl, Popup } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapBoxMapAPI from './mapAPI';
+import MapPopup from './MapPopup';
 
 const style = {
-  width: '20px',
-  height: '20px',
+  width: '25px',
+  height: '25px',
   color: '#fff',
   background: '#1978c8',
   borderRadius: '20px',
-  textAlign: 'center'
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontWeight: 'bold'
 };
 
 class ClusterMarker extends PureComponent {
@@ -31,7 +34,7 @@ class ClusterMarker extends PureComponent {
 
     return (
       <Marker longitude={longitude} latitude={latitude}>
-        <div onClick={this.onClick} style={{ ...style, background: '#f28a25' }}>
+        <div onClick={this.onClick} style={{ ...style, background: '#f24425' }}>
           {pointCount}
         </div>
       </Marker>
@@ -49,7 +52,8 @@ class Map extends PureComponent {
         longitude: -122.4376,
         zoom: 2
       },
-      markers: []
+      markers: [],
+      selectedMarker: null
     };
     this._cluster = React.createRef();
 
@@ -86,6 +90,30 @@ class Map extends PureComponent {
     });
   }
 
+  onClickMarker = marker => {
+    this.setState({
+      selectedMarker: marker
+    })
+  }
+
+  renderPopup() {
+    const { selectedMarker } = this.state;
+    return (
+      selectedMarker && (
+        <Popup
+          tipSize={5}
+          anchor="bottom"
+          longitude={selectedMarker.long}
+          latitude={selectedMarker.lat}
+          closeOnClick={false}
+          onClose={() => this.setState({ selectedMarker: null })}
+        >
+          <MapPopup selectedMarker={selectedMarker} />
+        </Popup>
+      )
+    )
+  }
+
   renderMap = (markers, viewport) => {
     return (
       <MapGL
@@ -109,11 +137,17 @@ class Map extends PureComponent {
                 key={marker.location}
                 longitude={marker.long}
                 latitude={marker.lat}
+                
               >
-                <div style={style} />
+                <div style={style} onClick={() => this.onClickMarker(marker)}>
+                {/* Popup here? */}
+                </div>
               </Marker>
             ))}
           </Cluster>
+          {this.renderPopup()}
+          <FullscreenControl position='top-right' />
+          <GeolocateControl position='top-right' />
           <NavigationControl showCompass showZoom position='top-right' />
         </MapGL>
     )
@@ -121,10 +155,9 @@ class Map extends PureComponent {
 
   render() {
     const { markers, viewport } = this.state;
-
     return (
       <React.Fragment>
-      {markers.length ? this.renderMap(markers, viewport) : 'Loading...'}
+      {markers.length ? this.renderMap(markers, viewport) : null}
       </React.Fragment>
     );
   }
