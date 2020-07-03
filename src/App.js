@@ -55,6 +55,16 @@ class App extends Component {
         {countryView === 0 ? (
           <Chart data={data} country={country} />
         ): <Map /> }
+        <div className={styles.disclaimer}>
+          <p className={styles.disclaimerText}>
+            Data sourced from <a className={styles.disclaimerLink} href="https://github.com/mathdroid/covid-19-api">mathdroid's COVID-19 API</a> and inspired by <a className={styles.disclaimerLink} href="https://www.youtube.com/watch?time_continue=13&v=khJlrj3Y6Ls&feature=emb_logo">Adrian Hajdin's YouTube Tutorial</a>
+          </p>
+        </div>
+        <div className={styles.disclaimer}>
+          <p className={styles.disclaimerText}>
+            <a className={styles.disclaimerLink} href="https://github.com/sleeplesseditor/CoronaTracker">Github Repo</a>
+          </p>
+        </div>
       </div>
     )
   }

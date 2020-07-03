@@ -30,6 +30,27 @@ body {
   margin: 3rem 0 0 1rem;
 }
 
+.disclaimer {
+  margin: 1rem 0 0 0;
+}
+
+.disclaimerText {
+  font-size: 1rem;
+  font-family: 'Krona One';
+  color: rgb(105, 104, 104);
+}
+
+.disclaimerLink {
+  text-decoration: none;
+  color: rgb(105, 104, 104);
+  cursor: pointer;
+  transform: all .2s ease-in-out;
+}
+
+.disclaimerLink:hover {
+  color: rgb(255, 0, 0);
+}
+
 @media (max-width: 770px) {
   .container {
     margin: 0 10%;

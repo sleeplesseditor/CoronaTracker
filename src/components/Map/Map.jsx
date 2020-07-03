@@ -3,7 +3,6 @@ import { fetchMapData } from '../../api';
 import MapGL, { FullscreenControl, GeolocateControl, Marker, NavigationControl, Popup } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import mapBoxMapAPI from './mapAPI';
 import MapPopup from './MapPopup';
 
 const style = {
@@ -119,7 +118,7 @@ class Map extends PureComponent {
       <MapGL
           style={{ width: '70%', height: '800px' }}
           mapStyle='mapbox://styles/mapbox/streets-v8'
-          accessToken={`${mapBoxMapAPI.mapBoxMapAPIToken}`}
+          accessToken={`${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
           onViewportChange={this.onViewportChange}
           {...viewport}
         >
