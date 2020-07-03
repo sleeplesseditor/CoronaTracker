@@ -1,84 +1,133 @@
-import React, { useEffect, useState } from 'react';
+import React, { PureComponent } from 'react';
 import { fetchMapData } from '../../api';
 import styles from './Map.module.css';
-import ReactMapboxGl, { Feature, Layer, Popup, ZoomControl } from 'react-mapbox-gl';
+import MapGL, { Marker, NavigationControl, Popup } from '@urbica/react-map-gl';
+import Cluster from '@urbica/react-map-gl-cluster';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import mapBoxMapAPI from './mapAPI';
 
-const MapComponent = ReactMapboxGl({
-  accessToken: `${mapBoxMapAPI.mapBoxMapAPIToken}`
-})
+const style = {
+  width: '20px',
+  height: '20px',
+  color: '#fff',
+  background: '#1978c8',
+  borderRadius: '20px',
+  textAlign: 'center'
+};
 
-const Map = () => {
-  const [mapMarkerData, setMapMarkerData] = useState([]);
-  const [mapCenter, setMapCenter] = useState([-0.109970527, 51.52916347]);
-  const [mapZoom, setMapZoom] = useState([4])
-  const [selectedMarker, setSelectedMarker] = useState(undefined)
-
-  useEffect(() => {
-    const fetchMapAPI = async () => {
-      setMapMarkerData(await fetchMapData());
-    }
-
-    fetchMapAPI();
-  }, []);
-
-  const handleMapClick = (marker) => {
-    setMapZoom([7]);
-    setMapCenter([marker.long, marker.lat]);
-    setSelectedMarker(marker);
+class ClusterMarker extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
   }
 
-  const flyingSpeed = {
-    speed: 0.8
-  };
+  onClick() {
+    const { onClick, ...cluster } = this.props;
+    onClick(cluster);
+  }
 
-  console.log('POPUP', selectedMarker)
+  render() {
+    const { longitude, latitude, pointCount } = this.props;
 
-  return (
-    <div className={styles.container}>
-      <h2 className={styles.maptitle}>Global Hotspots (-48 Hours)</h2>
-      {mapMarkerData.length ? (
-        <MapComponent 
-          style={'mapbox://styles/mapbox/streets-v8'}
-          containerStyle={{
-            height: '100%',
-            width: '100%'
-          }}
-          center={mapCenter}
-          zoom={mapZoom}
-          flyToOptions={flyingSpeed}
+    return (
+      <Marker longitude={longitude} latitude={latitude}>
+        <div onClick={this.onClick} style={{ ...style, background: '#f28a25' }}>
+          {pointCount}
+        </div>
+      </Marker>
+    );
+  }
+}
+
+class Map extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      viewport: {
+        latitude: 37.7577,
+        longitude: -122.4376,
+        zoom: 2
+      },
+      markers: []
+    };
+    this._cluster = React.createRef();
+
+    this.onClick = this.onClick.bind(this);
+    this.onViewportChange = this.onViewportChange.bind(this);
+  }
+
+  async componentDidMount() {
+    const fetchMapAPIresponse = await fetchMapData();
+
+    this.setState({ markers: fetchMapAPIresponse });
+
+  }
+
+  onViewportChange(viewport) {
+    this.setState({ viewport });
+  }
+
+  onClick(cluster) {
+    const { clusterId, longitude, latitude } = cluster;
+
+    const supercluster = this._cluster.current.getCluster();
+    const zoom = supercluster.getClusterExpansionZoom(clusterId);
+
+    this.setState(state => {
+      const newVewport = {
+        ...state.viewport,
+        latitude,
+        longitude,
+        zoom
+      };
+
+      return { ...state, viewport: newVewport };
+    });
+  }
+
+  renderMap = (markers, viewport) => {
+    return (
+      <MapGL
+          style={{ width: '70%', height: '800px' }}
+          mapStyle='mapbox://styles/mapbox/streets-v8'
+          accessToken={`${mapBoxMapAPI.mapBoxMapAPIToken}`}
+          onViewportChange={this.onViewportChange}
+          {...viewport}
         >
-          <Layer type="symbol" id="marker" layout={{ "icon-image": "marker-15" }}>
-            {
-              mapMarkerData.map((marker, i) => (
-                <Feature
-                  coordinates={[marker.long, marker.lat]}
-                  onClick={() => handleMapClick(marker)}
-                >
-                </Feature>
-              ))
-            }
-          </Layer>
-          <Layer
-            id="popupLayer"
+          <Cluster
+            ref={this._cluster}
+            radius={40}
+            extent={512}
+            nodeSize={64}
+            component={cluster => (
+              <ClusterMarker onClick={this.onClick} {...cluster} />
+            )}
           >
-          {selectedMarker && (
-            <Popup
-              coordinates={[selectedMarker.lat, selectedMarker.long]}
-              key={selectedMarker.location}
-            >
-              <div className={styles.popup}>
-                <h1>Popup</h1>
-                <h2>{selectedMarker.location}</h2>
-              </div>
-            </Popup>
-          )}
-          </Layer>
-          <ZoomControl />
-        </MapComponent>
-      ): null}
-    </div>
-  )
+            {markers.map(marker => (
+              <Marker
+                key={marker.location}
+                longitude={marker.long}
+                latitude={marker.lat}
+              >
+                <div style={style} />
+              </Marker>
+            ))}
+          </Cluster>
+          <NavigationControl showCompass showZoom position='top-right' />
+        </MapGL>
+    )
+  }
+
+  render() {
+    const { markers, viewport } = this.state;
+
+    return (
+      <React.Fragment>
+      {markers.length ? this.renderMap(markers, viewport) : 'Loading...'}
+      </React.Fragment>
+    );
+  }
 }
 
 export default Map;

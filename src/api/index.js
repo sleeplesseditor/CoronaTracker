@@ -56,8 +56,8 @@ export const fetchMapData = async () => {
     const { data } = await axios.get(`${url}/daily/${formattedDate}`);
 
     const modifiedData = data.map((mapData) => ({
-      lat: parseFloat(mapData.lat),
-      long: parseFloat(mapData.long),
+      lat: Number(mapData.lat),
+      long: Number(mapData.long),
       // coordinates: [mapData.lat, mapData.long],
       confirmed: mapData.confirmed,
       deaths: mapData.deaths,
